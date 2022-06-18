@@ -5,7 +5,7 @@
 //! a priority-inheriting mutex on Linux.
 //!
 //! In general, you should consider using the lock implementations provided by `std` or `parking_lot`, unless your application
-//! is intended to run on a real-time system where priority-inversions must be avoided.
+//! is intended to run on a real-time system where [priority inversions](https://en.wikipedia.org/wiki/Priority_inversion) must be avoided.
 
 use once_cell::unsync::OnceCell;
 use std::sync::atomic::Ordering;

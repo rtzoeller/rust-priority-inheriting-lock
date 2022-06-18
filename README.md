@@ -4,7 +4,7 @@ A priority-inheriting lock implementation based on Linux futexes.
 
 It uses [@m-ou-se](https://github.com/m-ou-se/)'s [`linux-futex`](https://docs.rs/linux-futex/latest/linux_futex/) crate to implement [@Amanieu](https://github.com/Amanieu/)'s [`lock_api`](https://docs.rs/lock_api/latest/lock_api/).
 
-In general, you should consider using the lock implementations provided by `std` or `parking_lot`, unless your application is intended to run on a real-time system where priority-inversions must be avoided.
+In general, you should consider using the lock implementations provided by `std` or `parking_lot`, unless your application is intended to run on a real-time system where [priority inversions](https://en.wikipedia.org/wiki/Priority_inversion) must be avoided.
 
 ## Minimum Rust version
 
