@@ -3,10 +3,10 @@ use priority_inheriting_lock::{gettid, PriorityInheritingLock};
 use std::fs::File;
 use std::io::Read;
 use std::path::Path;
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::mpsc::channel;
 use std::sync::Arc;
 use std::thread;
+use std::time::Instant;
 
 #[cfg(test)]
 #[macro_export]
@@ -80,15 +80,11 @@ fn try_lock_uncontended() {
 fn try_lock_contended() {
     let m = Arc::new(PriorityInheritingLock::new(()));
     let m2 = m.clone();
-
     let _g = m.lock();
-    let t = thread::spawn(move || {
-        let g2 = m2.try_lock();
 
-        return g2.is_some();
-    });
+    let t = thread::spawn(move || m2.try_lock().is_some());
 
-    assert_eq!(false, t.join().unwrap());
+    assert!(!t.join().unwrap());
 }
 
 fn set_scheduler(policy: i32, priority: i32) {
@@ -108,6 +104,18 @@ fn set_scheduler(policy: i32, priority: i32) {
     }
 }
 
+/// Gets the thread priority as reported by /proc/<tid>/stat.
+fn get_proc_stat_priority(tid: i32) -> i32 {
+    let path = format!("/proc/{tid}/stat");
+    let path = Path::new(&path);
+    let mut file = File::open(&path).unwrap();
+    let mut string = String::new();
+    file.read_to_string(&mut string).unwrap();
+    // man 5 proc indicates that the priority is the 18th element
+    let priority = string.split(' ').nth(17).unwrap();
+    priority.parse::<i32>().unwrap()
+}
+
 #[test]
 fn priority_is_inherited() {
     require_root!("priority_is_inherited");
@@ -115,26 +123,28 @@ fn priority_is_inherited() {
     let t = thread::spawn(|| {
         let m = Arc::new(PriorityInheritingLock::new(1));
         let m2 = m.clone();
-        let boosted = AtomicBool::new(false);
         set_scheduler(libc::SCHED_FIFO, 30);
+        let tid = gettid();
+        let original_priority = get_proc_stat_priority(tid);
+        assert_eq!(original_priority, -31);
         let _guard = m.lock();
 
         let _ = thread::spawn(move || {
             set_scheduler(libc::SCHED_FIFO, 60);
             let _guard = m2.lock();
-            boosted.store(true, Ordering::SeqCst);
         });
 
-        let thread_id = gettid();
-        let path = format!("/proc/{thread_id}/stat");
-        let path = Path::new(&path);
-        std::thread::sleep(std::time::Duration::from_millis(10));
-        let mut file = File::open(&path).unwrap();
-        let mut string = String::new();
-        file.read_to_string(&mut string).unwrap();
-        let priority_str = string.split(" ").nth(17).unwrap();
-        let priority = priority_str.parse::<i32>().unwrap();
-        assert_eq!(priority, -61)
+        let start = Instant::now();
+        loop {
+            let boosted_priority = get_proc_stat_priority(tid);
+            if boosted_priority == -61 {
+                break;
+            } else if start.elapsed().as_millis() > 100 {
+                panic!("Thread's priority was not boosted within expected time.");
+            } else {
+                std::thread::sleep(std::time::Duration::from_millis(5));
+            }
+        }
     });
 
     t.join().unwrap();
