@@ -4,6 +4,7 @@ use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::mpsc::channel;
 use std::sync::Arc;
 use std::thread;
 
@@ -24,11 +25,49 @@ macro_rules! require_root {
     };
 }
 
+// Modeled after https://github.com/Amanieu/parking_lot/blob/336a9b31ff385728d00eb7ef173e4d054584b787/src/mutex.rs#L131
 #[test]
 fn smoke() {
     let m = PriorityInheritingLock::new(());
     drop(m.lock());
     drop(m.lock());
+}
+
+// Modeled after https://github.com/Amanieu/parking_lot/blob/336a9b31ff385728d00eb7ef173e4d054584b787/src/mutex.rs#L139
+#[test]
+fn lots_and_lots() {
+    const J: u32 = 1000;
+    const K: u32 = 3;
+
+    let m = Arc::new(PriorityInheritingLock::new(0));
+
+    fn inc(m: &PriorityInheritingLock<u32>) {
+        for _ in 0..J {
+            *m.lock() += 1;
+        }
+    }
+
+    let (tx, rx) = channel();
+    for _ in 0..K {
+        let tx2 = tx.clone();
+        let m2 = m.clone();
+        thread::spawn(move || {
+            inc(&m2);
+            tx2.send(()).unwrap();
+        });
+        let tx2 = tx.clone();
+        let m2 = m.clone();
+        thread::spawn(move || {
+            inc(&m2);
+            tx2.send(()).unwrap();
+        });
+    }
+
+    drop(tx);
+    for _ in 0..2 * K {
+        rx.recv().unwrap();
+    }
+    assert_eq!(*m.lock(), J * K * 2);
 }
 
 #[test]
