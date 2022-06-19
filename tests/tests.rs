@@ -106,7 +106,7 @@ fn set_scheduler(policy: i32, priority: i32) {
 
 /// Gets the thread priority as reported by /proc/<tid>/stat.
 fn get_proc_stat_priority(tid: i32) -> i32 {
-    let path = format!("/proc/{tid}/stat");
+    let path = format!("/proc/{}/stat", tid);
     let path = Path::new(&path);
     let mut file = File::open(&path).unwrap();
     let mut string = String::new();
