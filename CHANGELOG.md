@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased] - ReleaseDate
+## [0.1.1] - 2022-06-19
 
 - Update `lock_api` dependency to 0.4.7.
 
