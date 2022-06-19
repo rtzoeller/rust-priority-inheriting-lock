@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 authors = ["Ryan Zoeller <rtzoeller@rtzoeller.com>"]
 description = "A priority-inheriting lock based on Linux futexes"
+repository = "https://github.com/rtzoeller/rust-priority-inheriting-lock/"
 categories = ["concurrency"]
 license = "MIT OR Apache-2.0"
 
