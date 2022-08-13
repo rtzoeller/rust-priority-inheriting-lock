@@ -18,7 +18,7 @@ once_cell = "1.12.0"
 thread_local = "1.1.4"
 
 [dev-dependencies]
-nix = { version = "0.24.1", default-features = false, features = ["user"] }
+nix = { version = "0.25.0", default-features = false, features = ["user"] }
 
 [[test]]
 name = "tests"
