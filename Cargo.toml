@@ -19,6 +19,7 @@ thread_local = "1.1.4"
 
 [dev-dependencies]
 nix = { version = "0.25.0", default-features = false, features = ["user"] }
+procfs = { version = "0.14.0", default-features = false }
 
 [[test]]
 name = "tests"
