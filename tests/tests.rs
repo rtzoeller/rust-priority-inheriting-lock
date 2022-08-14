@@ -1,12 +1,11 @@
 use priority_inheriting_lock::{gettid, PriorityInheritingLock};
 
-use std::fs::File;
-use std::io::Read;
-use std::path::Path;
 use std::sync::mpsc::channel;
 use std::sync::Arc;
 use std::thread;
 use std::time::Instant;
+
+use procfs::process::Process;
 
 #[cfg(test)]
 #[macro_export]
@@ -104,18 +103,6 @@ fn set_scheduler(policy: i32, priority: i32) {
     }
 }
 
-/// Gets the thread priority as reported by /proc/<tid>/stat.
-fn get_proc_stat_priority(tid: i32) -> i32 {
-    let path = format!("/proc/{}/stat", tid);
-    let path = Path::new(&path);
-    let mut file = File::open(&path).unwrap();
-    let mut string = String::new();
-    file.read_to_string(&mut string).unwrap();
-    // man 5 proc indicates that the priority is the 18th element
-    let priority = string.split(' ').nth(17).unwrap();
-    priority.parse::<i32>().unwrap()
-}
-
 #[test]
 fn priority_is_inherited() {
     require_root!("priority_is_inherited");
@@ -125,7 +112,8 @@ fn priority_is_inherited() {
         let m2 = m.clone();
         set_scheduler(libc::SCHED_FIFO, 30);
         let tid = gettid();
-        let original_priority = get_proc_stat_priority(tid);
+        let task = Process::myself().unwrap().task_from_tid(tid).unwrap();
+        let original_priority = task.stat().unwrap().priority;
         assert_eq!(original_priority, -31);
         let _guard = m.lock();
 
@@ -136,7 +124,7 @@ fn priority_is_inherited() {
 
         let start = Instant::now();
         loop {
-            let boosted_priority = get_proc_stat_priority(tid);
+            let boosted_priority = task.stat().unwrap().priority;
             if boosted_priority == -61 {
                 break;
             } else if start.elapsed().as_millis() > 100 {
