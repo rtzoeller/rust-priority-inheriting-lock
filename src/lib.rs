@@ -84,6 +84,36 @@ unsafe impl<S: linux_futex::Scope> lock_api::RawMutex for RawPriorityInheritingL
     }
 }
 
+unsafe impl<S: linux_futex::Scope> lock_api::RawMutexTimed for RawPriorityInheritingLock<S> {
+    type Duration = std::time::Duration;
+
+    type Instant = std::time::Instant;
+
+    fn try_lock_for(&self, timeout: Self::Duration) -> bool {
+        self.try_lock_until(Self::Instant::now() + timeout)
+    }
+
+    fn try_lock_until(&self, timeout: Self::Instant) -> bool {
+        let tid = get_cached_tid();
+        let fast_locked = self
+            .0
+            .value
+            .compare_exchange(0, tid, Ordering::SeqCst, Ordering::SeqCst);
+
+        if fast_locked.is_ok() {
+            return true;
+        }
+
+        loop {
+            match self.0.lock_pi_until(timeout) {
+                Ok(_) => return true,
+                Err(linux_futex::TimedLockError::TryAgain) => (),
+                Err(linux_futex::TimedLockError::TimedOut) => return false,
+            }
+        }
+    }
+}
+
 /// A priority-inheriting lock implementation, for use within a single process.
 ///
 /// See also: [`PriorityInheritingLockGuard`], [`SharedPriorityInheritingLock`]

@@ -86,6 +86,37 @@ fn try_lock_contended() {
     assert!(!t.join().unwrap());
 }
 
+#[test]
+fn try_lock_for_uncontended() {
+    let m = PriorityInheritingLock::new(());
+    assert!(m
+        .try_lock_for(std::time::Duration::from_millis(10))
+        .is_some());
+}
+
+#[test]
+fn try_lock_for_contended() {
+    let m = Arc::new(PriorityInheritingLock::new(()));
+    let m2 = m.clone();
+    let g = m.lock();
+
+    let t = thread::spawn(move || {
+        let mut attempts = 1;
+        loop {
+            match m2.try_lock_for(std::time::Duration::from_millis(10)) {
+                Some(_) => return attempts,
+                None => attempts += 1,
+            }
+        }
+    });
+
+    std::thread::sleep(std::time::Duration::from_millis(50));
+    drop(g);
+
+    let attempts = t.join().unwrap();
+    assert!((4..=6).contains(&attempts));
+}
+
 fn set_scheduler(policy: i32, priority: i32) {
     unsafe {
         let pthread_id = libc::pthread_self();
