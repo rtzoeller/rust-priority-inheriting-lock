@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased] - ReleaseDate
+## [0.2.0] - 2022-08-16
 
 - Added try-lock timeout support via `lock_api::RawMutexTimed`.
 - Updated `linux-futex` dependency to 0.1.2.
