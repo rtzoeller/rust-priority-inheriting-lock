@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased] - ReleaseDate
+
+- Remove `thread_local` dependency.
+
 ## [0.2.0] - 2022-08-16
 
 - Added try-lock timeout support via `lock_api::RawMutexTimed`.
