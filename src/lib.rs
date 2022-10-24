@@ -7,11 +7,10 @@
 //! In general, you should consider using the lock implementations provided by `std` or `parking_lot`, unless your application
 //! is intended to run on a real-time system where [priority inversions](https://en.wikipedia.org/wiki/Priority_inversion) must be avoided.
 
-use once_cell::unsync::OnceCell;
 use std::sync::atomic::Ordering;
 
 thread_local! {
-    static TID: OnceCell::<libc::pid_t> = OnceCell::new()
+    static TID: libc::pid_t = gettid();
 }
 
 /// A priority-inheriting lock implementation.
@@ -149,11 +148,11 @@ pub fn gettid() -> libc::pid_t {
     unsafe { libc::gettid() }
 }
 
-// Marking this as inline seems to hurt performance slightly
+#[inline]
 fn get_cached_tid() -> libc::pid_t {
     let mut tid = 0;
     TID.with(|it| {
-        tid = *it.get_or_init(gettid);
+        tid = *it;
     });
 
     tid
