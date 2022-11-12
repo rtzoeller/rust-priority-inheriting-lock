@@ -47,3 +47,13 @@ jobs:
         with:
           command: clippy
           args: -- -D warnings
+
+  semver:
+    name: Check semver (must manually inspect)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Check semver (must manually inspect)
+        uses: obi1kenobi/cargo-semver-checks-action@v1
+        continue-on-error: true
