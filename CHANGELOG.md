@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased] - ReleaseDate
+## [0.2.2] - 2022-11-12
 
 - Remove `once_cell` dependency.
 
