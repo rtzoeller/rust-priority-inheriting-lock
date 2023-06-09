@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased] - ReleaseDate
+## [0.2.3] - 2023-06-09
 
 - Updated `linux-futex` dependency to 0.2.0.
 
