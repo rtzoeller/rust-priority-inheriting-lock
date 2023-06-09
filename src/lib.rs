@@ -47,10 +47,10 @@ unsafe impl<S: linux_futex::Scope> lock_api::RawMutex for RawPriorityInheritingL
     /// to match the calling thread's priority.
     fn lock(&self) {
         let tid = get_cached_tid();
-        let fast_locked = self
-            .0
-            .value
-            .compare_exchange(0, tid, Ordering::SeqCst, Ordering::SeqCst);
+        let fast_locked =
+            self.0
+                .value
+                .compare_exchange(0, tid as u32, Ordering::SeqCst, Ordering::SeqCst);
 
         if fast_locked.is_err() {
             while self.0.lock_pi().is_err() {}
@@ -59,10 +59,10 @@ unsafe impl<S: linux_futex::Scope> lock_api::RawMutex for RawPriorityInheritingL
 
     fn try_lock(&self) -> bool {
         let tid = get_cached_tid();
-        let fast_locked = self
-            .0
-            .value
-            .compare_exchange(0, tid, Ordering::SeqCst, Ordering::SeqCst);
+        let fast_locked =
+            self.0
+                .value
+                .compare_exchange(0, tid as u32, Ordering::SeqCst, Ordering::SeqCst);
 
         match fast_locked {
             Ok(_) => true,
@@ -75,7 +75,7 @@ unsafe impl<S: linux_futex::Scope> lock_api::RawMutex for RawPriorityInheritingL
         let fast_unlocked =
             self.0
                 .value
-                .compare_exchange(tid, 0, Ordering::SeqCst, Ordering::SeqCst);
+                .compare_exchange(tid as u32, 0, Ordering::SeqCst, Ordering::SeqCst);
 
         if fast_unlocked.is_err() {
             self.0.unlock_pi();
@@ -94,10 +94,10 @@ unsafe impl<S: linux_futex::Scope> lock_api::RawMutexTimed for RawPriorityInheri
 
     fn try_lock_until(&self, timeout: Self::Instant) -> bool {
         let tid = get_cached_tid();
-        let fast_locked = self
-            .0
-            .value
-            .compare_exchange(0, tid, Ordering::SeqCst, Ordering::SeqCst);
+        let fast_locked =
+            self.0
+                .value
+                .compare_exchange(0, tid as u32, Ordering::SeqCst, Ordering::SeqCst);
 
         if fast_locked.is_ok() {
             return true;
