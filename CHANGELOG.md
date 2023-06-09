@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased] - ReleaseDate
+
+- Updated `linux-futex` dependency to 0.2.0.
+
 ## [0.2.2] - 2022-11-12
 
 - Remove `once_cell` dependency.
