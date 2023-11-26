@@ -55,5 +55,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Check semver (must manually inspect)
-        uses: obi1kenobi/cargo-semver-checks-action@v1
+        uses: obi1kenobi/cargo-semver-checks-action@v2
+        with:
+          verbose: true
         continue-on-error: true
