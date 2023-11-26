@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased] - ReleaseDate
+
+- Updated MSRV to 1.65.0.
+- Mark `RawPriorityInheritingLock::new()` and `gettid()` as `#[must_use]`.
+
 ## [0.2.3] - 2023-06-09
 
 - Updated `linux-futex` dependency to 0.2.0.
