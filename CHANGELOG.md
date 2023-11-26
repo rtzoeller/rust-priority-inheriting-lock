@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased] - ReleaseDate
+## [0.3.0] - 2023-11-26
 
 - Updated MSRV to 1.65.0.
 - Mark `RawPriorityInheritingLock::new()` and `gettid()` as `#[must_use]`.

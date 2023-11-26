@@ -1,6 +1,6 @@
 [package]
 name = "priority-inheriting-lock"
-version = "0.2.3"
+version = "0.3.0"
 edition = "2021"
 rust-version = "1.65.0"
 authors = ["Ryan Zoeller <rtzoeller@rtzoeller.com>"]
