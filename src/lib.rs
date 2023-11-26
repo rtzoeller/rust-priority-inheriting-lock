@@ -22,6 +22,7 @@ pub struct RawPriorityInheritingLock<S>(linux_futex::PiFutex<S>);
 
 impl<S> RawPriorityInheritingLock<S> {
     /// Create a new, unlocked `RawPriorityInheritingLock`.
+    #[must_use]
     pub const fn new() -> Self {
         Self(linux_futex::PiFutex::new(0))
     }
@@ -144,6 +145,7 @@ pub type SharedPriorityInheritingLockGuard<'a, T> =
 /// Safe wrapper around `gettid`.
 ///
 /// `gettid` is always successful on Linux.
+#[must_use]
 pub fn gettid() -> libc::pid_t {
     unsafe { libc::gettid() }
 }
