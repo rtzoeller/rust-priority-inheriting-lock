@@ -17,7 +17,7 @@ lock_api = "0.4.7"
 
 [dev-dependencies]
 nix = { version = "0.26.2", default-features = false, features = ["user"] }
-procfs = { version = "0.15.1", default-features = false }
+procfs = { version = "0.16.0", default-features = false }
 
 [[test]]
 name = "tests"
