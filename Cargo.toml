@@ -2,6 +2,7 @@
 name = "priority-inheriting-lock"
 version = "0.2.3"
 edition = "2021"
+rust-version = "1.65.0"
 authors = ["Ryan Zoeller <rtzoeller@rtzoeller.com>"]
 description = "A priority-inheriting lock based on Linux futexes"
 repository = "https://github.com/rtzoeller/rust-priority-inheriting-lock/"
@@ -13,11 +14,11 @@ license = "MIT OR Apache-2.0"
 [dependencies]
 libc = "0.2.126"
 linux-futex = "0.2.0"
-lock_api = "0.4.7"
+lock_api = "0.4.11"
 
 [dev-dependencies]
-nix = { version = "0.26.2", default-features = false, features = ["user"] }
-procfs = { version = "0.15.1", default-features = false }
+nix = { version = "0.27.1", default-features = false, features = ["user"] }
+procfs = { version = "0.16.0", default-features = false }
 
 [[test]]
 name = "tests"
