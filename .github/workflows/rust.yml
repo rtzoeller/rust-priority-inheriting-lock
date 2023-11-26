@@ -12,7 +12,7 @@ jobs:
           - stable
           - beta
           - nightly
-          - 1.56.1 # MSRV
+          - 1.65.0 # MSRV
 
     steps:
       - name: Checkout repo

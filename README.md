@@ -8,7 +8,7 @@ In general, you should consider using the lock implementations provided by `std`
 
 ## Minimum Rust version
 
-The current minimum supported Rust version (MSRV) is 1.56. The MSRV will not be changed in the future without bumping the major or minor version.
+The current minimum supported Rust version (MSRV) is 1.65. The MSRV will not be changed in the future without bumping the major or minor version.
 
 ## License
 
