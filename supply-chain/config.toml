@@ -1,0 +1,96 @@
+
+# cargo-vet config file
+
+[cargo-vet]
+version = "0.9"
+
+[policy.priority-inheriting-lock]
+audit-as-crates-io = true
+
+[[exemptions.bitflags]]
+version = "2.4.2"
+criteria = "safe-to-run"
+
+[[exemptions.cfg-if]]
+version = "1.0.0"
+criteria = "safe-to-run"
+
+[[exemptions.errno]]
+version = "0.3.8"
+criteria = "safe-to-run"
+
+[[exemptions.hex]]
+version = "0.4.3"
+criteria = "safe-to-run"
+
+[[exemptions.lazy_static]]
+version = "1.4.0"
+criteria = "safe-to-run"
+
+[[exemptions.libc]]
+version = "0.2.153"
+criteria = "safe-to-deploy"
+
+[[exemptions.linux-raw-sys]]
+version = "0.4.13"
+criteria = "safe-to-run"
+
+[[exemptions.lock_api]]
+version = "0.4.11"
+criteria = "safe-to-deploy"
+
+[[exemptions.nix]]
+version = "0.27.1"
+criteria = "safe-to-run"
+
+[[exemptions.priority-inheriting-lock]]
+version = "0.3.0"
+criteria = "safe-to-deploy"
+
+[[exemptions.procfs]]
+version = "0.16.0"
+criteria = "safe-to-run"
+
+[[exemptions.procfs-core]]
+version = "0.16.0"
+criteria = "safe-to-run"
+
+[[exemptions.rustix]]
+version = "0.38.31"
+criteria = "safe-to-run"
+
+[[exemptions.windows-sys]]
+version = "0.52.0"
+criteria = "safe-to-run"
+
+[[exemptions.windows-targets]]
+version = "0.52.3"
+criteria = "safe-to-run"
+
+[[exemptions.windows_aarch64_gnullvm]]
+version = "0.52.3"
+criteria = "safe-to-run"
+
+[[exemptions.windows_aarch64_msvc]]
+version = "0.52.3"
+criteria = "safe-to-run"
+
+[[exemptions.windows_i686_gnu]]
+version = "0.52.3"
+criteria = "safe-to-run"
+
+[[exemptions.windows_i686_msvc]]
+version = "0.52.3"
+criteria = "safe-to-run"
+
+[[exemptions.windows_x86_64_gnu]]
+version = "0.52.3"
+criteria = "safe-to-run"
+
+[[exemptions.windows_x86_64_gnullvm]]
+version = "0.52.3"
+criteria = "safe-to-run"
+
+[[exemptions.windows_x86_64_msvc]]
+version = "0.52.3"
+criteria = "safe-to-run"
