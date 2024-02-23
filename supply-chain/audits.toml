@@ -1,0 +1,19 @@
+
+# cargo-vet audits file
+
+[[audits.autocfg]]
+who = "Ryan Zoeller <rtzoeller@rtzoeller.com>"
+criteria = "safe-to-deploy"
+version = "1.1.0"
+notes = "Some potential for build-time abuse if woefully misconfigured, but for reasonable configurations it is well behaved. A potential footgun, not a violation in itself."
+
+[[audits.linux-futex]]
+who = "Ryan Zoeller <rtzoeller@rtzoeller.com>"
+criteria = "safe-to-deploy"
+version = "0.2.0"
+notes = "Minimal wrapper around Linux kernel futex API."
+
+[[audits.scopeguard]]
+who = "Ryan Zoeller <rtzoeller@rtzoeller.com>"
+criteria = "safe-to-deploy"
+version = "1.2.0"
