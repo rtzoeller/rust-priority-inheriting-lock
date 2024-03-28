@@ -129,7 +129,7 @@ fn set_scheduler(policy: i32, priority: i32) {
         // of whatever this returns on failure (probably EPERM).
         match libc::pthread_setschedparam(pthread_id, policy, &param) {
             0 => (),
-            err => panic!("{}", nix::errno::Errno::from_i32(err)),
+            err => panic!("{}", nix::errno::Errno::from_raw(err)),
         }
     }
 }
