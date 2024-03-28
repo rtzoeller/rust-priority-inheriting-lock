@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased] - ReleaseDate
+
+- Updated MSRV to 1.69.0.
+
 ## [0.3.0] - 2023-11-26
 
 - Updated MSRV to 1.65.0.
