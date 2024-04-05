@@ -6,7 +6,7 @@ rust-version = "1.69.0"
 authors = ["Ryan Zoeller <rtzoeller@rtzoeller.com>"]
 description = "A priority-inheriting lock based on Linux futexes"
 repository = "https://github.com/rtzoeller/rust-priority-inheriting-lock/"
-categories = ["concurrency"]
+categories = ["concurrency", "os::linux-apis"]
 license = "MIT OR Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
