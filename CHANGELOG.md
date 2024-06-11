@@ -6,6 +6,7 @@
 - Updated `libc` dependency to 0.2.155.
 - Updated `linux-futex` dependency to 1.0.0.
 - Updated `lock_api` dependency to 0.4.12.
+- Add support for `aarch64-linux-android`.
 
 ## [0.3.0] - 2023-11-26
 
