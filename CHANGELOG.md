@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased] - ReleaseDate
+## [1.0.0] - 2024-06-12
 
 - Updated MSRV to 1.69.0.
 - Updated `libc` dependency to 0.2.155.
