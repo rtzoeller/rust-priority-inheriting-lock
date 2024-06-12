@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - run: rustup toolchain add --profile=minimal ${{ matrix.rust }} --component clippy --component rustfmt
 
@@ -40,7 +40,7 @@ jobs:
     name: Check semver (must manually inspect)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Check semver (must manually inspect)
         uses: obi1kenobi/cargo-semver-checks-action@v2
