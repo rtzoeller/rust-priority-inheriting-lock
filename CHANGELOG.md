@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased] - ReleaseDate
+## [1.0.1] - 2026-09-30
 
 - Support glibc versions older than 2.30.
 
