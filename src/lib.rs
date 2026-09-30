@@ -145,9 +145,14 @@ pub type SharedPriorityInheritingLockGuard<'a, T> =
 /// Safe wrapper around `gettid`.
 ///
 /// `gettid` is always successful on Linux.
+///
 #[must_use]
 pub fn gettid() -> libc::pid_t {
-    unsafe { libc::gettid() }
+    // Prefer a syscall over `libc::gettid`, to support glibc versions older than 2.30.
+    #[allow(clippy::cast_possible_truncation)]
+    unsafe {
+        libc::syscall(libc::SYS_gettid) as libc::pid_t
+    }
 }
 
 #[inline]
