@@ -25,6 +25,11 @@ jobs:
 
       - run: rustup target add --toolchain=${{ matrix.rust }} ${{ matrix.target }}
 
+      # Newer versions of lock_api require a newer Rust than our MSRV.
+      # Keep this in sync with the defined MSRV and lock_api version.
+      - if: matrix.rust == '1.69.0'
+        run: cargo +${{ matrix.rust }} update -p lock_api --precise 0.4.12
+
       - run: cargo +${{ matrix.rust }} build --target=${{ matrix.target }}
 
       - if: matrix.target == 'x86_64-unknown-linux-gnu'
