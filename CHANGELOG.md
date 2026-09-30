@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased] - ReleaseDate
+
+- Support glibc versions older than 2.30.
+
 ## [1.0.0] - 2024-06-12
 
 - Updated MSRV to 1.69.0.
