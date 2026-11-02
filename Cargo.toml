@@ -23,3 +23,8 @@ procfs = { version = "0.16.0", default-features = false }
 [[test]]
 name = "tests"
 path = "tests/tests.rs"
+
+[[test]]
+name = "fork"
+path = "tests/fork.rs"
+harness = false
