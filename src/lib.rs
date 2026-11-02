@@ -6,11 +6,23 @@
 //!
 //! In general, you should consider using the lock implementations provided by `std` or `parking_lot`, unless your application
 //! is intended to run on a real-time system where [priority inversions](https://en.wikipedia.org/wiki/Priority_inversion) must be avoided.
+//!
+//! # Forking
+//!
+//! Locks keep working in a child process created with `fork()`. The crate registers a `pthread_atfork` handler that
+//! refreshes the thread id it caches, because the kernel identifies the owner of a priority-inheriting futex by thread id
+//! and the child's thread has a new one.
+//!
+//! Two limits apply. A lock that any thread holds at the time of the fork stays locked in the child and cannot be
+//! released there, because its owner does not exist in the child. And `clone()`, `vfork()` and glibc's `_Fork()` do not
+//! run `pthread_atfork` handlers, so the cached thread id stays stale in a child created by those calls.
 
-use std::sync::atomic::Ordering;
+use std::cell::Cell;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 thread_local! {
-    static TID: libc::pid_t = gettid();
+    /// The calling thread's id, or 0 if it has not been fetched yet.
+    static TID: Cell<libc::pid_t> = const { Cell::new(0) };
 }
 
 /// A priority-inheriting lock implementation.
@@ -157,10 +169,38 @@ pub fn gettid() -> libc::pid_t {
 
 #[inline]
 fn get_cached_tid() -> libc::pid_t {
-    let mut tid = 0;
-    TID.with(|it| {
-        tid = *it;
-    });
+    TID.with(|tid| match tid.get() {
+        0 => fetch_tid(tid),
+        tid => tid,
+    })
+}
 
-    tid
+#[cold]
+fn fetch_tid(tid: &Cell<libc::pid_t>) -> libc::pid_t {
+    register_fork_handler();
+    let fetched = gettid();
+    tid.set(fetched);
+    fetched
+}
+
+/// Registers `refresh_tid_in_child` with `pthread_atfork` before any thread caches its id.
+///
+/// This uses a flag instead of `std::sync::Once`: a child forked while another thread is inside `Once::call_once`
+/// would block forever on that thread, which does not exist in the child. With the flag, two threads can register the
+/// handler at the same time, which runs it twice in the child and is harmless.
+fn register_fork_handler() {
+    static REGISTERED: AtomicBool = AtomicBool::new(false);
+
+    if !REGISTERED.load(Ordering::Acquire) {
+        let ret = unsafe { libc::pthread_atfork(None, None, Some(refresh_tid_in_child)) };
+        assert_eq!(ret, 0, "failed to register fork handler");
+        REGISTERED.store(true, Ordering::Release);
+    }
+}
+
+/// Runs in the child after `fork()`, on the one thread that exists there.
+///
+/// This must stay async-signal-safe: `gettid` is a raw syscall and the thread local is a plain store.
+extern "C" fn refresh_tid_in_child() {
+    TID.with(|tid| tid.set(gettid()));
 }

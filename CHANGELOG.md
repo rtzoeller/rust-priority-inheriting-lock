@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased] - ReleaseDate
+
+- Refresh the cached thread id in a child process after `fork()`. Locks used in the child no longer panic under contention.
+
 ## [1.0.1] - 2026-09-30
 
 - Support glibc versions older than 2.30.
